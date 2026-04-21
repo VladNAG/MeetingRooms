@@ -1,4 +1,4 @@
-using MeetingRooms.Application.Rooms.GetRooms;
+using MeetingRooms.Application.Queries.Rooms.GetRooms;
 using MeetingRooms.Domain.Entities;
 
 namespace MeetingRooms.Application.Abstractions;

@@ -1,3 +1,5 @@
+using MeetingRooms.Contracts.Enums;
+
 namespace MeetingRooms.Application.Abstractions;
 
 public interface IUserContext

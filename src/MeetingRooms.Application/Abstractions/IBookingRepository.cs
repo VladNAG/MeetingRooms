@@ -1,4 +1,4 @@
-using MeetingRooms.Application.Bookings.SearchBookings;
+using MeetingRooms.Application.Queries.Bookings.SearchBookings;
 using MeetingRooms.Domain.Entities;
 
 namespace MeetingRooms.Application.Abstractions;

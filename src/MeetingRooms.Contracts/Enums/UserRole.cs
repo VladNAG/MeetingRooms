@@ -1,4 +1,4 @@
-namespace MeetingRooms.Application.Abstractions;
+namespace MeetingRooms.Contracts.Enums;
 
 public enum UserRole
 {
