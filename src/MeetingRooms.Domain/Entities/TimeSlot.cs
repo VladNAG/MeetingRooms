@@ -4,10 +4,10 @@ namespace MeetingRooms.Domain.Entities;
 
 public sealed class TimeSlot
 {
-    public DateTime StartAt { get; }
-    public DateTime EndAt { get; }
+    public DateTimeOffset StartAt { get; }
+    public DateTimeOffset EndAt { get; }
 
-    public TimeSlot(DateTime startAt, DateTime endAt)
+    public TimeSlot(DateTimeOffset startAt, DateTimeOffset endAt)
     {
         if (endAt <= startAt)
             throw new DomainException("EndAt must be after StartAt.");
@@ -19,6 +19,4 @@ public sealed class TimeSlot
         EndAt = endAt;
     }
 
-    public bool OverlapsWith(TimeSlot other) =>
-        StartAt < other.EndAt && EndAt > other.StartAt;
 }

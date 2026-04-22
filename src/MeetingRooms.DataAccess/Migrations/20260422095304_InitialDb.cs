@@ -73,11 +73,24 @@ namespace MeetingRooms.DataAccess.Migrations
                 name: "IX_status_transitions_booking_request_id",
                 table: "status_transitions",
                 column: "booking_request_id");
+
+            migrationBuilder.Sql(
+                "CREATE UNIQUE INDEX uix_room_confirmed_slot " +
+                "ON booking_requests (room_id, start_at, end_at) " +
+                "WHERE status = 'Confirmed';");
+
+            migrationBuilder.Sql(
+                "CREATE INDEX IX_booking_requests_conflict_check " +
+                "ON booking_requests (room_id, start_at, end_at) " +
+                "WHERE status IN ('Submitted', 'Confirmed');");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.Sql("DROP INDEX IF EXISTS uix_room_confirmed_slot;");
+            migrationBuilder.Sql("DROP INDEX IF EXISTS IX_booking_requests_conflict_check;");
+
             migrationBuilder.DropTable(
                 name: "rooms");
 

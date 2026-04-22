@@ -13,7 +13,7 @@ public class SubmitBookingCommandHandler(
 {
     public async Task Handle(SubmitBookingCommand request, CancellationToken ct)
     {
-        var booking = await bookings.GetByIdAsync(request.BookingId, ct);
+        var booking = await bookings.GetByIdForUpdateAsync(request.BookingId, ct);
             booking.EnsureExists(request.BookingId);
 
         UserValidationExtensions.RequireOwnership(request.UserId, booking.RequestedByUserId);

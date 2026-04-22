@@ -11,8 +11,8 @@ public class DeclineBookingCommandHandler(
 {
     public async Task Handle(DeclineBookingCommand request, CancellationToken ct)
     {
-        var booking = await bookings.GetByIdAsync(request.BookingId, ct);
-           booking.EnsureExists(request.BookingId);
+        var booking = await bookings.GetByIdForUpdateAsync(request.BookingId, ct);
+        booking.EnsureExists(request.BookingId);
 
         booking.Decline(request.Reason, request.UserId);
         await bookings.SaveAsync(ct);

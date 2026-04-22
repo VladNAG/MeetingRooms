@@ -4,8 +4,8 @@ namespace MeetingRooms.Contracts.Requests.Booking;
 
 public class BookingSearchRequest
 {
-    public DateTime? From { get; set; }
-    public DateTime? To { get; set; }
+    public DateTimeOffset? From { get; set; }
+    public DateTimeOffset? To { get; set; }
     public Guid? RoomId { get; set; }
     public BookingStatusDto? Status { get; set; }
 }

@@ -11,6 +11,7 @@ public class SearchBookingsQueryHandler(IBookingRepository bookings) : IRequestH
     {
         var filter = new BookingSearchFilter { From = request.From, To = request.To, RoomId = request.RoomId, Status = request.Status };
         var result = await bookings.SearchAsync(filter, ct);
+
         return result.Select(b => b.ToSummaryDto()).ToList();
     }
 }

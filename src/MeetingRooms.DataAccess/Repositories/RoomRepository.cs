@@ -12,7 +12,7 @@ public class RoomRepository(MeetingRoomsDbContext context) : IRoomRepository
 
     public Task<List<Room>> GetFilteredAsync(RoomFilter filter, CancellationToken ct)
     {
-        var query = context.Rooms.AsQueryable();
+        var query = context.Rooms.AsNoTracking().AsQueryable();
 
         if (!string.IsNullOrWhiteSpace(filter.Location))
             query = query.Where(r => r.Location == filter.Location);

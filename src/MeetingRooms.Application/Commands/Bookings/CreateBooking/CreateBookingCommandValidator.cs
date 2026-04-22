@@ -11,6 +11,6 @@ public class CreateBookingCommandValidator : AbstractValidator<CreateBookingComm
         RuleFor(x => x.EndAt).NotEmpty().GreaterThan(x => x.StartAt);
         RuleFor(x => x.Purpose).NotEmpty();
         RuleFor(x => x.Attendees).NotEmpty();
-        RuleForEach(x => x.Attendees).NotEmpty();
+        RuleForEach(x => x.Attendees).NotEmpty().EmailAddress();
     }
 }

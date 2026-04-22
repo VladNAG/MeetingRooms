@@ -6,8 +6,8 @@ namespace MeetingRooms.Application.Queries.Bookings.SearchBookings;
 
 public class SearchBookingsQuery : IRequest<List<BookingSummaryResponse>>
 {
-    public DateTime? From { get; set; }
-    public DateTime? To { get; set; }
+    public DateTimeOffset? From { get; set; }
+    public DateTimeOffset? To { get; set; }
     public Guid? RoomId { get; set; }
     public BookingStatus? Status { get; set; }
 }

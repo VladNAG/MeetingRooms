@@ -12,7 +12,7 @@ public class ConfirmBookingCommandHandler(
     public async Task Handle(ConfirmBookingCommand request, CancellationToken ct)
     {
 
-        var booking = await bookings.GetByIdAsync(request.BookingId, ct);
+        var booking = await bookings.GetByIdForUpdateAsync(request.BookingId, ct);
         booking.EnsureExists(request.BookingId);
 
         booking.Confirm(request.UserId);

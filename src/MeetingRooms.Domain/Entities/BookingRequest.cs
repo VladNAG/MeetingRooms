@@ -1,6 +1,7 @@
-using MeetingRooms.Domain.Entities;
 using MeetingRooms.Domain.Enums;
 using MeetingRooms.Domain.Exceptions;
+
+namespace MeetingRooms.Domain.Entities;
 
 public class BookingRequest
 {

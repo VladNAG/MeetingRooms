@@ -10,12 +10,17 @@ public class BookingRepository(MeetingRoomsDbContext context) : IBookingReposito
 {
     public Task<BookingRequest?> GetByIdAsync(Guid id, CancellationToken ct) =>
         context.BookingRequests
+            .AsNoTracking()
             .Include(b => b.Transitions)
+            .FirstOrDefaultAsync(b => b.Id == id, ct);
+
+    public Task<BookingRequest?> GetByIdForUpdateAsync(Guid id, CancellationToken ct) =>
+        context.BookingRequests
             .FirstOrDefaultAsync(b => b.Id == id, ct);
 
     public Task<List<BookingRequest>> SearchAsync(BookingSearchFilter filter, CancellationToken ct)
     {
-        var query = context.BookingRequests.AsQueryable();
+        var query = context.BookingRequests.AsNoTracking().AsQueryable();
 
         if (filter.RoomId.HasValue)
             query = query.Where(b => b.RoomId == filter.RoomId.Value);

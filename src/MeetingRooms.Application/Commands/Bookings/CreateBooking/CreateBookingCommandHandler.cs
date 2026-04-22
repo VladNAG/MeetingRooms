@@ -19,9 +19,7 @@ public class CreateBookingCommandHandler(
         var room = await rooms.GetByIdAsync(request.RoomId, ct);
             room.EnsureExists(request.RoomId);
 
-        var slot = new TimeSlot(
-            DateTime.SpecifyKind(request.StartAt, DateTimeKind.Utc),
-            DateTime.SpecifyKind(request.EndAt, DateTimeKind.Utc));
+        var slot = new TimeSlot(request.StartAt.ToUniversalTime(), request.EndAt.ToUniversalTime());
 
         var booking = BookingRequest.Create(room.Id, request.UserId, slot, request.Purpose, request.Attendees);
 
