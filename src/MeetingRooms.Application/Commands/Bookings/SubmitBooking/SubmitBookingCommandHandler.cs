@@ -1,34 +1,36 @@
-using MeetingRooms.Application.Abstractions;
-using MeetingRooms.Application.Exceptions;
-using MeetingRooms.Domain.Entities;
-using MeetingRooms.Domain.Exceptions;
 using MediatR;
+using MeetingRooms.Application.Abstractions;
+using MeetingRooms.Application.Extensions;
+using MeetingRooms.Domain.Exceptions;
+using Microsoft.Extensions.Logging;
 
 namespace MeetingRooms.Application.Commands.Bookings.SubmitBooking;
 
 public class SubmitBookingCommandHandler(
     IBookingRepository bookings,
     IRoomRepository rooms,
-    IUserContext userContext) : IRequestHandler<SubmitBookingCommand>
+    ILogger<SubmitBookingCommandHandler> logger) : IRequestHandler<SubmitBookingCommand>
 {
     public async Task Handle(SubmitBookingCommand request, CancellationToken ct)
     {
-        var booking = await bookings.GetByIdAsync(request.BookingId, ct)
-            ?? throw NotFoundException.For<BookingRequest>(request.BookingId);
+        var booking = await bookings.GetByIdAsync(request.BookingId, ct);
+            booking.EnsureExists(request.BookingId);
 
-        if (booking.RequestedByUserId != userContext.UserId)
-            throw new ForbiddenException();
+        UserValidationExtensions.RequireOwnership(request.UserId, booking.RequestedByUserId);
 
-        var room = await rooms.GetByIdAsync(booking.RoomId, ct)
-            ?? throw NotFoundException.For<Room>(booking.RoomId);
+        var room = await rooms.GetByIdAsync(booking.RoomId, ct);
+            room.EnsureExists(booking.RoomId);
 
         if (!room.IsActive)
             throw new DomainException("Room is not active.");
 
         if (await bookings.HasConflictAsync(booking.RoomId, booking.TimeSlot, booking.Id, ct))
-            throw new DomainException("The time slot conflicts with an existing booking.");
+            throw new DomainException("The time slot conflicts with an existing booking. Change time or room");
 
-        booking.Submit(userContext.UserId);
+        booking.Submit(request.UserId);
         await bookings.SaveAsync(ct);
+
+        logger.LogInformation("Booking submitted: BookingId={BookingId}, UserId={UserId}",
+            booking.Id, request.UserId);
     }
 }

@@ -1,24 +1,23 @@
 using MeetingRooms.Application.Abstractions;
-using MeetingRooms.Application.Exceptions;
-using MeetingRooms.Contracts.Enums;
-using MeetingRooms.Domain.Entities;
 using MediatR;
+using Microsoft.Extensions.Logging;
+using MeetingRooms.Application.Extensions;
 
 namespace MeetingRooms.Application.Commands.Bookings.DeclineBooking;
 
 public class DeclineBookingCommandHandler(
     IBookingRepository bookings,
-    IUserContext userContext) : IRequestHandler<DeclineBookingCommand>
+    ILogger<DeclineBookingCommandHandler> logger) : IRequestHandler<DeclineBookingCommand>
 {
     public async Task Handle(DeclineBookingCommand request, CancellationToken ct)
     {
-        if (userContext.Role != UserRole.Admin)
-            throw new ForbiddenException();
+        var booking = await bookings.GetByIdAsync(request.BookingId, ct);
+           booking.EnsureExists(request.BookingId);
 
-        var booking = await bookings.GetByIdAsync(request.BookingId, ct)
-            ?? throw NotFoundException.For<BookingRequest>(request.BookingId);
-
-        booking.Decline(request.Reason, userContext.UserId);
+        booking.Decline(request.Reason, request.UserId);
         await bookings.SaveAsync(ct);
+
+        logger.LogInformation("Booking declined: BookingId={BookingId}, AdminId={AdminId}",
+            booking.Id, request.UserId);
     }
 }

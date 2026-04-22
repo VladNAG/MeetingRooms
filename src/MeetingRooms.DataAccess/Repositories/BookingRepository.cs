@@ -1,5 +1,5 @@
 using MeetingRooms.Application.Abstractions;
-using MeetingRooms.Application.Bookings.SearchBookings;
+using MeetingRooms.Application.Queries.Bookings.SearchBookings;
 using MeetingRooms.Domain.Entities;
 using MeetingRooms.Domain.Enums;
 using Microsoft.EntityFrameworkCore;

@@ -5,7 +5,7 @@ namespace MeetingRooms.Application.Commands.Rooms.CreateRoom;
 
 public class CreateRoomCommand : IRequest<RoomResponse>
 {
-    public string Name { get; set; } = null!;
+    public string Name { get; set; }
     public int Capacity { get; set; }
-    public string Location { get; set; } = null!;
+    public string Location { get; set; }
 }

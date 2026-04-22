@@ -6,6 +6,12 @@ public class ConfirmBookingCommandValidator : AbstractValidator<ConfirmBookingCo
 {
     public ConfirmBookingCommandValidator()
     {
-        RuleFor(x => x.BookingId).NotEmpty();
+        RuleFor(x => x.BookingId)
+        .NotEmpty()
+        .WithMessage("BookingId is required.");
+
+        RuleFor(x => x.UserId)
+            .NotEmpty()
+            .WithMessage("UserId is required.");
     }
 }

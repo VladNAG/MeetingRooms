@@ -1,23 +1,25 @@
 using MeetingRooms.Application.Abstractions;
-using MeetingRooms.Application.Exceptions;
-using MeetingRooms.Domain.Entities;
 using MediatR;
+using Microsoft.Extensions.Logging;
+using MeetingRooms.Application.Extensions;
 
 namespace MeetingRooms.Application.Commands.Bookings.CancelBooking;
 
 public class CancelBookingCommandHandler(
     IBookingRepository bookings,
-    IUserContext userContext) : IRequestHandler<CancelBookingCommand>
+    ILogger<CancelBookingCommandHandler> logger) : IRequestHandler<CancelBookingCommand>
 {
     public async Task Handle(CancelBookingCommand request, CancellationToken ct)
     {
-        var booking = await bookings.GetByIdAsync(request.BookingId, ct)
-            ?? throw NotFoundException.For<BookingRequest>(request.BookingId);
+        var booking = await bookings.GetByIdAsync(request.BookingId, ct);
+        booking.EnsureExists(request.BookingId);
 
-        if (booking.RequestedByUserId != userContext.UserId)
-            throw new ForbiddenException();
+        UserValidationExtensions.RequireOwnership(request.UserId, booking.RequestedByUserId);
 
-        booking.Cancel(request.Reason, userContext.UserId);
+        booking.Cancel(request.Reason, request.UserId);
         await bookings.SaveAsync(ct);
+
+        logger.LogInformation("Booking cancelled: BookingId={BookingId}, UserId={UserId}",
+            booking.Id, request.UserId);
     }
 }

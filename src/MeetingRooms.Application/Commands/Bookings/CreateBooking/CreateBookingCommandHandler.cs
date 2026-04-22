@@ -4,27 +4,33 @@ using MeetingRooms.Application.Mappings;
 using MeetingRooms.Domain.Entities;
 using MediatR;
 using MeetingRooms.Contracts.Responses.Booking;
+using Microsoft.Extensions.Logging;
+using MeetingRooms.Application.Extensions;
 
 namespace MeetingRooms.Application.Commands.Bookings.CreateBooking;
 
 public class CreateBookingCommandHandler(
     IBookingRepository bookings,
     IRoomRepository rooms,
-    IUserContext userContext) : IRequestHandler<CreateBookingCommand, BookingDetailsResponse>
+    ILogger<CreateBookingCommandHandler> logger) : IRequestHandler<CreateBookingCommand, BookingDetailsResponse>
 {
     public async Task<BookingDetailsResponse> Handle(CreateBookingCommand request, CancellationToken ct)
     {
-        var room = await rooms.GetByIdAsync(request.RoomId, ct)
-            ?? throw NotFoundException.For<Room>(request.RoomId);
+        var room = await rooms.GetByIdAsync(request.RoomId, ct);
+            room.EnsureExists(request.RoomId);
 
         var slot = new TimeSlot(
             DateTime.SpecifyKind(request.StartAt, DateTimeKind.Utc),
             DateTime.SpecifyKind(request.EndAt, DateTimeKind.Utc));
 
-        var booking = BookingRequest.Create(room.Id, userContext.UserId, slot, request.Purpose, request.Attendees);
+        var booking = BookingRequest.Create(room.Id, request.UserId, slot, request.Purpose, request.Attendees);
 
         await bookings.AddAsync(booking, ct);
         await bookings.SaveAsync(ct);
+
+        logger.LogInformation("Booking created: BookingId={BookingId}, RoomId={RoomId}, UserId={UserId}",
+            booking.Id, booking.RoomId, booking.RequestedByUserId);
+
         return booking.ToDto();
     }
 }

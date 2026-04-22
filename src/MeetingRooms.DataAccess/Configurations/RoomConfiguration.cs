@@ -1,7 +1,6 @@
 using MeetingRooms.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace MeetingRooms.DataAccess.Configurations;
 
@@ -17,5 +16,8 @@ public class RoomConfiguration : IEntityTypeConfiguration<Room>
         builder.Property(r => r.Capacity).HasColumnName("capacity");
         builder.Property(r => r.Location).HasColumnName("location").IsRequired();
         builder.Property(r => r.IsActive).HasColumnName("is_active");
+
+        builder.Property<uint>("xmin")
+             .IsRowVersion();
     }
 }

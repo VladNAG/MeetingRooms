@@ -22,7 +22,7 @@ namespace MeetingRooms.DataAccess.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("MeetingRooms.Domain.Entities.BookingRequest", b =>
+            modelBuilder.Entity("BookingRequest", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -102,7 +102,6 @@ namespace MeetingRooms.DataAccess.Migrations
             modelBuilder.Entity("MeetingRooms.Domain.Entities.StatusTransition", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
@@ -139,7 +138,7 @@ namespace MeetingRooms.DataAccess.Migrations
                     b.ToTable("status_transitions", (string)null);
                 });
 
-            modelBuilder.Entity("MeetingRooms.Domain.Entities.BookingRequest", b =>
+            modelBuilder.Entity("BookingRequest", b =>
                 {
                     b.OwnsOne("MeetingRooms.Domain.Entities.TimeSlot", "TimeSlot", b1 =>
                         {
@@ -168,14 +167,14 @@ namespace MeetingRooms.DataAccess.Migrations
 
             modelBuilder.Entity("MeetingRooms.Domain.Entities.StatusTransition", b =>
                 {
-                    b.HasOne("MeetingRooms.Domain.Entities.BookingRequest", null)
+                    b.HasOne("BookingRequest", null)
                         .WithMany("Transitions")
                         .HasForeignKey("BookingRequestId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("MeetingRooms.Domain.Entities.BookingRequest", b =>
+            modelBuilder.Entity("BookingRequest", b =>
                 {
                     b.Navigation("Transitions");
                 });

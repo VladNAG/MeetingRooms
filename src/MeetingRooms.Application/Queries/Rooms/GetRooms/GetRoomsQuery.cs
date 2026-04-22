@@ -5,7 +5,7 @@ namespace MeetingRooms.Application.Queries.Rooms.GetRooms;
 
 public class GetRoomsQuery : IRequest<List<RoomResponse>>
 {
-    public string? Location { get; set; }
+    public string Location { get; set; }
     public int? MinCapacity { get; set; }
     public bool? IsActive { get; set; }
 }

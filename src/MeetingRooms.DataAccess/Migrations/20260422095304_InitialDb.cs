@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace MeetingRooms.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class InitialDb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -73,22 +73,19 @@ namespace MeetingRooms.DataAccess.Migrations
                 name: "IX_status_transitions_booking_request_id",
                 table: "status_transitions",
                 column: "booking_request_id");
-
-            migrationBuilder.Sql("""
-                CREATE UNIQUE INDEX uix_room_confirmed_slot
-                ON booking_requests (room_id, start_at, end_at)
-                WHERE status = 'Confirmed';
-                """);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.Sql("DROP INDEX IF EXISTS uix_room_confirmed_slot;");
+            migrationBuilder.DropTable(
+                name: "rooms");
 
-            migrationBuilder.DropTable(name: "rooms");
-            migrationBuilder.DropTable(name: "status_transitions");
-            migrationBuilder.DropTable(name: "booking_requests");
+            migrationBuilder.DropTable(
+                name: "status_transitions");
+
+            migrationBuilder.DropTable(
+                name: "booking_requests");
         }
     }
 }

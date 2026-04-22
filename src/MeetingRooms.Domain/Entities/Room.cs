@@ -17,6 +17,9 @@ public class Room
         if (string.IsNullOrWhiteSpace(name))
             throw new DomainException("Room name is required.");
 
+        if (string.IsNullOrWhiteSpace(location))
+            throw new DomainException("Room location is required.");
+
         if (capacity <= 0)
             throw new DomainException("Room capacity must be greater than zero.");
 

@@ -11,7 +11,7 @@ public class StatusTransitionConfiguration : IEntityTypeConfiguration<StatusTran
         builder.ToTable("status_transitions");
 
         builder.HasKey(t => t.Id);
-        builder.Property(t => t.Id).HasColumnName("id");
+        builder.Property(t => t.Id).HasColumnName("id").ValueGeneratedNever();
         builder.Property(t => t.BookingRequestId).HasColumnName("booking_request_id");
         builder.Property(t => t.FromStatus).HasColumnName("from_status").HasConversion<string>();
         builder.Property(t => t.ToStatus).HasColumnName("to_status").HasConversion<string>();

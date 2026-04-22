@@ -1,24 +1,24 @@
 using MeetingRooms.Application.Abstractions;
-using MeetingRooms.Application.Exceptions;
-using MeetingRooms.Contracts.Enums;
-using MeetingRooms.Domain.Entities;
 using MediatR;
+using Microsoft.Extensions.Logging;
+using MeetingRooms.Application.Extensions;
 
 namespace MeetingRooms.Application.Commands.Bookings.ConfirmBooking;
 
 public class ConfirmBookingCommandHandler(
     IBookingRepository bookings,
-    IUserContext userContext) : IRequestHandler<ConfirmBookingCommand>
+    ILogger<ConfirmBookingCommandHandler> logger) : IRequestHandler<ConfirmBookingCommand>
 {
     public async Task Handle(ConfirmBookingCommand request, CancellationToken ct)
     {
-        if (userContext.Role != UserRole.Admin)
-            throw new ForbiddenException();
 
-        var booking = await bookings.GetByIdAsync(request.BookingId, ct)
-            ?? throw NotFoundException.For<BookingRequest>(request.BookingId);
+        var booking = await bookings.GetByIdAsync(request.BookingId, ct);
+        booking.EnsureExists(request.BookingId);
 
-        booking.Confirm(userContext.UserId);
+        booking.Confirm(request.UserId);
         await bookings.SaveAsync(ct);
+
+        logger.LogInformation("Booking confirmed: BookingId={BookingId}, AdminId={AdminId}",
+            booking.Id, request.UserId);
     }
 }

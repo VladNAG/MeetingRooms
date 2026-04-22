@@ -1,5 +1,3 @@
-using MeetingRooms.Domain.Entities;
-using MeetingRooms.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -30,9 +28,17 @@ public class BookingRequestConfiguration : IEntityTypeConfiguration<BookingReque
             ts.Property(t => t.EndAt).HasColumnName("end_at");
         });
 
+        builder.Property<uint>("xmin")
+            .IsRowVersion()
+            .HasColumnName("xmin");
+
+        builder.Navigation(b => b.Transitions)
+            .UsePropertyAccessMode(PropertyAccessMode.Field);
+
         builder.HasMany(b => b.Transitions)
             .WithOne()
             .HasForeignKey(t => t.BookingRequestId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.Cascade)
+            .IsRequired();
     }
 }

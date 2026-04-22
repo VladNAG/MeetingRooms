@@ -1,5 +1,5 @@
 using MeetingRooms.Application.Abstractions;
-using MeetingRooms.Application.Rooms.GetRooms;
+using MeetingRooms.Application.Queries.Rooms.GetRooms;
 using MeetingRooms.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 

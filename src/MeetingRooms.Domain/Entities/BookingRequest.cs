@@ -1,7 +1,6 @@
+using MeetingRooms.Domain.Entities;
 using MeetingRooms.Domain.Enums;
 using MeetingRooms.Domain.Exceptions;
-
-namespace MeetingRooms.Domain.Entities;
 
 public class BookingRequest
 {
@@ -10,11 +9,11 @@ public class BookingRequest
     public Guid RequestedByUserId { get; private set; }
     public TimeSlot TimeSlot { get; private set; } = default!;
     public string Purpose { get; private set; } = default!;
-    public List<string> Attendees { get; private set; } = [];
+    public List<string> Attendees { get; private set; } = new();
     public BookingStatus Status { get; private set; }
 
-    private readonly List<StatusTransition> _transitions = [];
-    public IReadOnlyList<StatusTransition> Transitions => _transitions.AsReadOnly();
+    private readonly List<StatusTransition> _transitions = new();
+    public IReadOnlyCollection<StatusTransition> Transitions => _transitions;
 
     private BookingRequest() { }
 
@@ -79,6 +78,8 @@ public class BookingRequest
         Status = BookingStatus.Cancelled;
     }
 
-    private void AddTransition(BookingStatus from, BookingStatus to, Guid byUserId, string? reason = null) =>
+    private void AddTransition(BookingStatus from, BookingStatus to, Guid byUserId, string? reason = null)
+    {
         _transitions.Add(StatusTransition.Create(Id, from, to, byUserId, reason));
+    }
 }
